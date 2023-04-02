@@ -45,7 +45,7 @@ body {
 }
 
 .btn:hover {
-    border-color: black;
+    background-color: brown;
 }
 
 .start-btn, .next-btn {
