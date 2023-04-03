@@ -3,22 +3,46 @@ var nextButton = document.getElementById('next-btn');
 var questionContainerElement = document.getElementById('question-container');
 var questionElement = document.getElementById('question');
 var answerButtonsElement = document.getElementById('answer-buttons');
+var timerEl = document.getElementById('countdown');
+var correctEl = document.getElementById('correct');
+var wrongEl = document.getElementById('wrong');
 
 var shuffledQuestions, currentQuestionsIndex;
 
 startButton.addEventListener('click', startGame);
+nextButton.addEventListener('click', () => {
+    currentQuestionsIndex++;
+    setNextQuestion();
+})
+
+function countDown() {
+    var timeLeft = 90;
+
+    var timeInterval = setInterval(function () {
+        timeLeft--;
+        timerEl.textContent = timeLeft + ' seconds left.';
+  
+        if(timeLeft === 0) {
+          clearInterval(timeInterval);
+          timerEl.textContent = '';
+        }
+  
+    }, 1000);
+}
 
 function startGame() {
     console.log('started');
     startButton.classList.add('hide');
+    shuffledQuestions = questions.sort(() => Math.random() - .5);
     currentQuestionsIndex = 0;
     questionContainerElement.classList.remove('hide');
     setNextQuestion();
+    countDown();
 }
 
 function setNextQuestion() {
     resetState();
-    showQuestion(currentQuestionsIndex)
+    showQuestion(shuffledQuestions[currentQuestionsIndex]);
 }
 
 function showQuestion(question) {
@@ -30,7 +54,7 @@ function showQuestion(question) {
         if (answer.correct) {
             button.dataset.correct = answer.correct
         }
-        button.assEventListener('click', selectAnswer);
+        button.addEventListener('click', selectAnswer);
         answerButtonsElement.appendChild(button);
     })
 }
@@ -42,9 +66,19 @@ function resetState() {
     }
 }
 
-function selectAnswer() {}
+function selectAnswer(e) {
+    var selectedButton = e.target;
+    var correct = selectedButton.dataset.correct;
+    if (shuffledQuestions.length > currentQuestionsIndex + 1) {
+        nextButton.classList.remove('hide');
+    } else {
+        startButton.innerText = 'Restart';
+        startButton.classList.remove('hide');
+    }
+    nextButton.classList.remove('hide');
+}
 
-var question = [
+var questions = [
         {
             question: 'What is the coolest Fortnite skin?',
             answer: [
